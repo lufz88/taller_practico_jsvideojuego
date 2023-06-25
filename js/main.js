@@ -18,11 +18,9 @@ let canvasSize;
 let elementsSize;
 
 function setCanvasSize() {
-	if (window.innerHeight > window.innerWidth) {
-		canvasSize = window.innerWidth * 0.75;
-	} else {
-		canvasSize = window.innerHeight * 0.75;
-	}
+	window.innerHeight > window.innerWidth
+		? (canvasSize = window.innerWidth * 0.75)
+		: (canvasSize = window.innerHeight * 0.75);
 
 	canvas.setAttribute('width', canvasSize);
 	canvas.setAttribute('height', canvasSize);
@@ -33,10 +31,19 @@ function setCanvasSize() {
 
 function startGame() {
 	game.font = elementsSize + 'px Verdana';
-	game.textAlign = 'left';
-	for (let y = 0; y < 10; y++) {
-		for (let i = 0; i < 10; i++) {
-			game.fillText(emojis['X'], elementsSize * i, elementsSize * y + elementsSize);
-		}
-	}
+	game.textAlign = 'start';
+
+	const map = maps[0];
+	const mapRows = map.trim().split('\n');
+	const mapRowCols = mapRows.map(row => row.trim().split(''));
+
+	mapRowCols.forEach((row, rowIndex) => {
+		row.forEach((col, colIndex) => {
+			const emoji = emojis[col];
+			const posX = elementsSize * colIndex;
+			const posY = elementsSize * rowIndex + elementsSize;
+
+			game.fillText(emoji, posX, posY);
+		});
+	});
 }
