@@ -1,0 +1,56 @@
+:root {
+	--primary: #5db0e1;
+	--secondary: #e38227e4;
+	--terciary: #2d3e94c9;
+	--bg: #323a5c;
+}
+
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+body {
+	background-color: var(--bg);
+	width: 100vw;
+	height: 100vh;
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.game-container {
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 40px 0;
+	display: flex;
+	flex-direction: column;
+}
+
+canvas {
+	border: 2px solid var(--secondary);
+	background-color: var(--terciary);
+	border-radius: 8px;
+}
+
+.button-container {
+	margin: 20px auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 4px;
+}
+
+.button-container button {
+	font-size: 16px;
+	width: 50px;
+	height: 30px;
+	background-color: var(--secondary);
+	border: 2px solid var(--terciary);
+}
+
+.messages {
+	font-size: 16px;
+	color: var(--primary);
+	margin: 0 auto;
+}
