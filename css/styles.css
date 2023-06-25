@@ -1,8 +1,8 @@
 :root {
 	--primary: #5db0e1;
 	--secondary: #e38227e4;
-	--terciary: #2d3e94c9;
-	--bg: #323a5c;
+	--terciary: #394fc1da;
+	--bg: #1b2033;
 }
 
 * {
@@ -13,21 +13,21 @@
 
 body {
 	background-color: var(--bg);
-	width: 100vw;
-	height: 100vh;
+
 	font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .game-container {
-	max-width: 800px;
-	margin: 0 auto;
-	padding: 40px 0;
+	width: 100vw;
+	height: 100vh;
 	display: flex;
 	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
 
 canvas {
-	border: 2px solid var(--secondary);
+	border: 4px solid var(--secondary);
 	background-color: var(--terciary);
 	border-radius: 8px;
 }
@@ -46,7 +46,8 @@ canvas {
 	width: 50px;
 	height: 30px;
 	background-color: var(--secondary);
-	border: 2px solid var(--terciary);
+	border: 4px solid var(--terciary);
+	border-radius: 8px;
 }
 
 .messages {
