@@ -10,6 +10,10 @@
 
 const canvas = document.querySelector('#game');
 const game = canvas.getContext('2d');
+const btnUp = document.querySelector('#up');
+const btnLeft = document.querySelector('#left');
+const btnRight = document.querySelector('#right');
+const btnDown = document.querySelector('#down');
 
 window.addEventListener('load', setCanvasSize);
 window.addEventListener('resize', setCanvasSize);
@@ -17,6 +21,10 @@ window.addEventListener('resize', setCanvasSize);
 let canvasSize;
 let elementsSize;
 
+const playerPosition = {
+	x: undefined,
+	y: undefined,
+};
 function setCanvasSize() {
 	window.innerHeight > window.innerWidth
 		? (canvasSize = window.innerWidth * 0.75)
@@ -37,13 +45,77 @@ function startGame() {
 	const mapRows = map.trim().split('\n');
 	const mapRowCols = mapRows.map(row => row.trim().split(''));
 
+	game.clearRect(0, 0, canvasSize, canvasSize);
+
 	mapRowCols.forEach((row, rowIndex) => {
 		row.forEach((col, colIndex) => {
 			const emoji = emojis[col];
 			const posX = elementsSize * colIndex;
 			const posY = elementsSize * rowIndex + elementsSize;
 
+			if (playerPosition.x == undefined && col == 'O') {
+				playerPosition.x = posX;
+				playerPosition.y = posY;
+			}
+
 			game.fillText(emoji, posX, posY);
 		});
 	});
+
+	movePlayer();
+}
+
+btnUp.addEventListener('click', moveUp);
+btnDown.addEventListener('click', moveDown);
+btnLeft.addEventListener('click', moveLeft);
+btnRight.addEventListener('click', moveRight);
+window.addEventListener('keydown', moveByKey);
+
+function movePlayer() {
+	game.fillText(emojis['PLAYER'], playerPosition.x, playerPosition.y);
+}
+
+function moveUp() {
+	if (playerPosition.y - elementsSize <= 0) {
+		return;
+	} else {
+		playerPosition.y -= elementsSize;
+	}
+	startGame();
+}
+function moveDown() {
+	if (playerPosition.y + elementsSize >= canvasSize) {
+		return;
+	} else {
+		playerPosition.y += elementsSize;
+	}
+	startGame();
+}
+function moveLeft() {
+	if (playerPosition.x <= 0) {
+		return;
+	} else {
+		playerPosition.x -= elementsSize;
+	}
+	startGame();
+}
+function moveRight() {
+	if (playerPosition.x + elementsSize * 2 >= canvasSize) {
+		return;
+	} else {
+		playerPosition.x += elementsSize;
+	}
+	startGame();
+}
+
+function moveByKey(event) {
+	if (event.code == 'ArrowUp') {
+		moveUp();
+	} else if (event.code == 'ArrowDown') {
+		moveDown();
+	} else if (event.code == 'ArrowLeft') {
+		moveLeft();
+	} else if (event.code == 'ArrowRight') {
+		moveRight();
+	}
 }
