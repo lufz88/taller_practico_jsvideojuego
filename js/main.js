@@ -43,6 +43,7 @@ function setCanvasSize() {
 	canvas.setAttribute('height', canvasSize);
 
 	elementsSize = canvasSize / 10 - 1.25;
+	playerPosition.x = undefined;
 	startGame();
 }
 
@@ -90,26 +91,35 @@ btnRight.addEventListener('click', moveRight);
 window.addEventListener('keydown', moveByKey);
 
 function movePlayer() {
+	checkGiftCollision() && levelUp();
+
+	checkBombCollision() && console.log('perdiste!');
+
+	game.fillText(emojis['PLAYER'], playerPosition.x, playerPosition.y);
+	console.log(playerPosition, giftPosition);
+}
+
+function checkGiftCollision() {
+	playerPosition.x < 0 && (playerPosition.x = 0);
 	const giftCollisionX = playerPosition.x.toFixed(3) == giftPosition.x.toFixed(3);
 	const giftCollisionY = playerPosition.y.toFixed(3) == giftPosition.y.toFixed(3);
 
+	return giftCollisionX && giftCollisionY;
+}
+
+function checkBombCollision() {
 	const bombCollision = bombArr.find(bomb => {
 		const xCollision = bomb.x.toFixed(3) == playerPosition.x.toFixed(3);
 		const yCollision = bomb.y.toFixed(3) == playerPosition.y.toFixed(3);
 		return xCollision && yCollision;
 	});
 
-	if (giftCollisionX && giftCollisionY) {
-		console.log('ganaste!');
-		level += 1;
-		startGame();
-	}
-	if (bombCollision) {
-		console.log('perdiste!');
-	}
+	return bombCollision;
+}
 
-	game.fillText(emojis['PLAYER'], playerPosition.x, playerPosition.y);
-	console.log(playerPosition);
+function levelUp() {
+	level++;
+	startGame();
 }
 
 function moveUp() {
