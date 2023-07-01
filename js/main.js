@@ -21,6 +21,8 @@ window.addEventListener('resize', setCanvasSize);
 let canvasSize;
 let elementsSize;
 let level = 0;
+let lives = 3;
+let bombArr;
 
 const playerPosition = {
 	x: undefined,
@@ -32,7 +34,10 @@ const giftPosition = {
 	y: undefined,
 };
 
-let bombArr;
+const bombPosition = {
+	x: undefined,
+	y: undefined,
+};
 
 function setCanvasSize() {
 	window.innerHeight > window.innerWidth
@@ -52,6 +57,12 @@ function startGame() {
 	game.textAlign = 'start';
 
 	const map = maps[level];
+
+	if (!map) {
+		gameWin();
+		return;
+	}
+
 	const mapRows = map.trim().split('\n');
 	const mapRowCols = mapRows.map(row => row.trim().split(''));
 	bombArr = [];
@@ -60,7 +71,7 @@ function startGame() {
 
 	mapRowCols.forEach((row, rowIndex) => {
 		row.forEach((col, colIndex) => {
-			const emoji = emojis[col];
+			let emoji = emojis[col];
 			const posX = elementsSize * colIndex;
 			const posY = elementsSize * rowIndex + elementsSize;
 
@@ -78,9 +89,16 @@ function startGame() {
 				bombArr.push({ x: posX, y: posY });
 			}
 
+			if (posX == bombPosition.x && posY == bombPosition.y) {
+				emoji = emojis['BOMB_COLLISION'];
+				bombPosition.x = undefined;
+				bombPosition.y = undefined;
+			}
+
 			game.fillText(emoji, posX, posY);
 		});
 	});
+
 	movePlayer();
 }
 
@@ -93,10 +111,9 @@ window.addEventListener('keydown', moveByKey);
 function movePlayer() {
 	checkGiftCollision() && levelUp();
 
-	checkBombCollision() && console.log('perdiste!');
+	checkBombCollision() && restartLevel();
 
 	game.fillText(emojis['PLAYER'], playerPosition.x, playerPosition.y);
-	console.log(playerPosition, giftPosition);
 }
 
 function checkGiftCollision() {
@@ -111,6 +128,11 @@ function checkBombCollision() {
 	const bombCollision = bombArr.find(bomb => {
 		const xCollision = bomb.x.toFixed(3) == playerPosition.x.toFixed(3);
 		const yCollision = bomb.y.toFixed(3) == playerPosition.y.toFixed(3);
+		if (xCollision && yCollision) {
+			bombPosition.x = bomb.x;
+			bombPosition.y = bomb.y;
+		}
+
 		return xCollision && yCollision;
 	});
 
@@ -120,6 +142,24 @@ function checkBombCollision() {
 function levelUp() {
 	level++;
 	startGame();
+}
+
+function restartLevel() {
+	playerPosition.x = undefined;
+	lives--;
+	gameOver();
+	startGame();
+}
+
+function gameOver() {
+	if (lives == 0) {
+		level = 0;
+		lives = 3;
+	}
+}
+
+function gameWin() {
+	console.log('terminaste el juego');
 }
 
 function moveUp() {
