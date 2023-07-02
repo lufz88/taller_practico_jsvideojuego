@@ -16,6 +16,7 @@ const btnRight = document.querySelector('#right');
 const btnDown = document.querySelector('#down');
 const livesCounter = document.querySelector('#lives');
 const timeCounter = document.querySelector('#time');
+const recordCounter = document.querySelector('#record');
 
 window.addEventListener('load', setCanvasSize);
 window.addEventListener('resize', setCanvasSize);
@@ -63,6 +64,7 @@ function startGame() {
 	game.font = elementsSize + 'px Verdana';
 	game.textAlign = 'start';
 	showLives();
+	showRecord();
 
 	const map = maps[level];
 
@@ -235,4 +237,10 @@ function showLives() {
 
 function showTime() {
 	timeCounter.innerHTML = ((Date.now() - timeStart) / 1000).toFixed(2) + 's';
+}
+
+function showRecord() {
+	localStorageRecord
+		? (recordCounter.innerHTML = localStorageRecord)
+		: (recordCounter.innerHTML = '-----');
 }
