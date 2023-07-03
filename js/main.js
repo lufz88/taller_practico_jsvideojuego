@@ -8,6 +8,16 @@
 // game.fillText('Platzi', 25, 25); // llenar con texto, (texto, X, Y)
 // game.textAlign = 'left'; // con 'left' el texto iniciará en la posicion X que determinamos, con 'right' terminará en la posición X que determinamos, con 'center' ubicará al texto centrado en relación a la posición que determinamos
 
+const startGameScreen = document.querySelector('#start-game-screen');
+const startGameButton = document.querySelector('#start-game-button');
+const gameContainer = document.querySelector('#game-container');
+
+const modal = document.querySelector('#modal');
+const messageTitle = document.querySelector('#message-title');
+const messageText = document.querySelector('#message-text');
+const continueButton = document.querySelector('#continue-button');
+const restartButton = document.querySelector('#restart-button');
+
 const canvas = document.querySelector('#game');
 const game = canvas.getContext('2d');
 const btnUp = document.querySelector('#up');
@@ -18,7 +28,8 @@ const livesCounter = document.querySelector('#lives');
 const timeCounter = document.querySelector('#time');
 const recordCounter = document.querySelector('#record');
 
-window.addEventListener('load', setCanvasSize);
+startGameButton.addEventListener('click', setCanvasSize);
+restartButton.addEventListener('click', () => location.reload());
 window.addEventListener('resize', setCanvasSize);
 
 let canvasSize;
@@ -48,9 +59,11 @@ const bombPosition = {
 };
 
 function setCanvasSize() {
+	startGameScreen.classList.add('hidden');
+	gameContainer.classList.remove('hidden');
 	window.innerHeight > window.innerWidth
-		? (canvasSize = window.innerWidth * 0.75)
-		: (canvasSize = window.innerHeight * 0.75);
+		? (canvasSize = window.innerWidth * 0.7)
+		: (canvasSize = window.innerHeight * 0.7);
 
 	canvas.setAttribute('width', canvasSize);
 	canvas.setAttribute('height', canvasSize);
@@ -61,6 +74,13 @@ function setCanvasSize() {
 }
 
 function startGame() {
+	btnUp.addEventListener('click', moveUp);
+	btnDown.addEventListener('click', moveDown);
+	btnLeft.addEventListener('click', moveLeft);
+	btnRight.addEventListener('click', moveRight);
+	window.addEventListener('keydown', moveByKey);
+
+	modal.classList.add('hidden');
 	game.font = elementsSize + 'px Verdana';
 	game.textAlign = 'start';
 	showLives();
@@ -116,12 +136,6 @@ function startGame() {
 
 	movePlayer();
 }
-
-btnUp.addEventListener('click', moveUp);
-btnDown.addEventListener('click', moveDown);
-btnLeft.addEventListener('click', moveLeft);
-btnRight.addEventListener('click', moveRight);
-window.addEventListener('keydown', moveByKey);
 
 function movePlayer() {
 	checkGiftCollision() && levelUp();
@@ -204,30 +218,54 @@ function checkBombCollision() {
 
 function levelUp() {
 	level++;
+
 	startGame();
 }
 
 function restartLevel() {
 	playerPosition.x = undefined;
 	lives--;
-	gameOver();
+	if (lives == 0) {
+		gameOver();
+		bombPosition.x = undefined;
+		bombPosition.y = undefined;
+		return;
+	}
 	startGame();
 }
 
 function gameOver() {
-	if (lives == 0) {
-		level = 0;
-		lives = 3;
-		timeStart = undefined;
-		clearInterval(timePlayed);
-	}
+	level = 0;
+	lives = 3;
+	timeStart = undefined;
+	clearInterval(timePlayed);
+	modal.classList.remove('hidden');
+	messageTitle.innerText = '¡Perdiste!';
+	messageText.innerText = '¿Listo para otra partida?';
+	continueButton.addEventListener('click', startGame);
+	window.removeEventListener('keydown', moveByKey);
 }
 
 function gameWin() {
+	setRecord();
+	clearInterval(timePlayed);
+	modal.classList.remove('hidden');
+	messageTitle.innerText = '¡Ganaste!';
+	if (record < localStorageRecord) {
+		messageText.innerText = `¡Hay un nuevo record!: 🏁 ${record} `;
+	} else {
+		messageText.innerText = `Pero no superaste el record. \n Tu record fue: 🏁 ${record}`;
+	}
+	continueButton.classList.add('hidden');
+	window.removeEventListener('keydown', moveByKey);
+}
+
+function setRecord() {
 	record = ((Date.now() - timeStart) / 1000).toFixed(2) + 's';
 	!localStorageRecord && localStorage.setItem('record', record);
-	record < localStorageRecord && localStorage.setItem('record', record);
-	clearInterval(timePlayed);
+	if (record < localStorageRecord) {
+		localStorage.setItem('record', record);
+	}
 }
 
 function showLives() {

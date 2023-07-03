@@ -9,7 +9,11 @@
 </head>
 
 <body>
-  <div class="game-container">
+  <section class="start-game-container" id="start-game-screen">
+    <h1>Death Labyrinth!</h1>
+    <button id="start-game-button">Start Game</button>
+  </section>
+  <div class="game-container hidden" id="game-container">
     <canvas id="game"></canvas>
 
     <div class="control-container">
@@ -28,6 +32,17 @@
         <p>Vidas: <span id="lives"></span></p>
         <p>Tiempo: ⌛<span id="time"></span></p>
         <p>Record: ⌚<span id="record"></span></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal hidden " id="modal">
+    <div class="message-container">
+      <h2 id="message-title"></h2>
+      <p id="message-text"></p>
+      <div class="message-button-container">
+        <button id="continue-button">Continuar</button>
+        <button id="restart-button">Volver al inicio</button>
       </div>
     </div>
   </div>
